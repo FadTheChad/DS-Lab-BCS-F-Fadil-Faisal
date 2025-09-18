@@ -1,95 +1,59 @@
 #include <iostream>
-#include <string>
 
 using namespace std;
 
-int getPriority(string des) 
+int main()
 {
-    if (des == "CEO") return 6;
-    if (des == "CTO") return 5;
-    if (des == "CFO") return 4;
-    if (des == "VP")  return 3;
-    if (des == "MGR") return 2;
-    if (des == "EMP") return 1;
-    return 0;
-}
-
-int main() 
-{
-    int n;
-    
-    cout << "Enter number of employees: ";
+    int n, target;
     cin >> n;
-
-    string names[100], desig[100];
-    int countCEO = 0, countCTO = 0, countCFO = 0;
-
-    for (int i = 0; i < n; i++) 
+    int arr[n];
+    for (int i = 0; i < n; i++)
     {
-        cout << "Enter employee " << i + 1 << " name: ";
-        cin >> names[i];
+        cin >> arr[i];
+    }
 
-        string des;
-        while (true) 
+    cin >> target;
+    int low = 0, high = n - 1;
+    bool found = false;
+
+    while (low <= high && target >= arr[low] && target <= arr[high])
+    {
+        if (low == high)
         {
-            cout << "Enter designation (CEO/CTO/CFO/VP/MGR/EMP): ";
-            cin >> des;
-
-            if (getPriority(des) == 0) 
+            if (arr[low] == target)
             {
-                cout << "Invalid designation! Please enter again.\n";
-                continue;
+                cout << "Index: " << low << endl;
             }
-
-            if (des == "CEO" && countCEO > 0) 
+            else
             {
-                cout << "Only 1 CEO allowed. Enter again.\n";
-                continue;
+                cout << "Element not found" << endl;
             }
-
-            if (des == "CTO" && countCTO > 0) 
-            {
-                cout << "Only 1 CTO allowed. Enter again.\n";
-                continue;
-            }
-
-            if (des == "CFO" && countCFO > 0) 
-            {
-                cout << "Only 1 CFO allowed. Enter again.\n";
-                continue;
-            }
-
-            if (des == "CEO") countCEO++;
-            if (des == "CTO") countCTO++;
-            if (des == "CFO") countCFO++;
-
+            found = true;
             break;
         }
-        desig[i] = des;
-    }
 
-    for (int i = 1; i < n; i++) 
-    {
-        string keyName = names[i];
-        string keyDesig = desig[i];
-        int keyPriority = getPriority(keyDesig);
-        int j = i - 1;
+        int pos = low + ((double)(high - low) / (arr[high] - arr[low])) * (target - arr[low]);
 
-        while (j >= 0 && getPriority(desig[j]) < keyPriority) 
+        if (arr[pos] == target)
         {
-            names[j + 1] = names[j];
-            desig[j + 1] = desig[j];
-            j--;
+            cout << "Index: " << pos << endl;
+            found = true;
+            break;
         }
 
-        names[j + 1] = keyName;
-        desig[j + 1] = keyDesig;
+        if (arr[pos] < target)
+        {
+            low = pos + 1;
+        }
+        else
+        {
+            high = pos - 1;
+        }
     }
 
-    cout << "\nEmployees sorted by designation priority:\n";
-    for (int i = 0; i < n; i++) 
+    if (!found)
     {
-        cout << names[i] << " - " << desig[i] << endl;
+        cout << "Element not found" << endl;
     }
 
     return 0;
